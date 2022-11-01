@@ -16,14 +16,16 @@ For background information see:<br>
 
 # Example 1 - Direct access to a sample OData service
 
-These examples are based on the [odata.org TripPin service](https://www.odata.org/blog/trippin-new-odata-v4-sample-service/) The examples are collected in the folder "1_trippin_odata".
+These examples are based on the [odata.org TripPin service](https://www.odata.org/blog/trippin-new-odata-v4-sample-service/). There are also original samples from [odata.org](https://github.com/ODataOrg/tutorials) - use these to get the fist-hand information. The examples here are stripped down and adjsuted for my needs. For an overview see the file "odata-requests.md".
 
 The calls can be directly used in the browser, via [curl](https://curl.se/) or [postman](https://www.postman.com/).
 
 
+
 Resources:
-https://www.odata.org/odata-services/service-usages/trippin-advanced-usages/
-https://learn.microsoft.com/en-us/power-query/samples/trippin/readme
+https://www.odata.org/getting-started/understand-odata-in-6-steps/ <br>
+https://www.odata.org/getting-started/basic-tutorial/ <br>
+https://www.odata.org/odata-services/service-usages/trippin-advanced-usages/ 
 
 
 
