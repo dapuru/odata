@@ -236,21 +236,29 @@ After implementation:
 
 # Example 3 - Code based implementation and classical SEGW
 
-Disclaimer - This way of creating an OData service is [not suggested imho](https://blogs.sap.com/2021/05/19/a-step-by-step-process-to-post-odata-services-in-sap-sap-hana-system/comment-page-1/#comment-587808), as it'S
+Disclaimer - This way of creating an OData service is [not suggested imho](https://blogs.sap.com/2021/05/19/a-step-by-step-process-to-post-odata-services-in-sap-sap-hana-system/comment-page-1/#comment-587808), as it's
 - quiet complicated
 - can't be exported to file-only definitions
 - there are better ways available (see Examples 4 and 5)
 
 "The “SAP Gateway Service Builder” (transaction SEGW) can be used to create an OData service. It’s a half-graphical modeling tool – using a code-based approach to build the CRUDQ methods (Create, Read, Update, Delete). (...) This method for creating OData services had been available since ABAP platform <= 7.4, but will still continue to work in newer release like S/4. The used OData-Version is V2." for more see: [Howto OData - High level overview](https://blogs.sap.com/2022/01/22/howto-odata-high-level-overview/)
 
+The steps, which need to be taken, are:
+(1) in SEGW create a project and eg. import a DDIC structure for the data model
+(2) in SEGW generate the MPC and DPC classes
+(3) in /IWFND/MAINT_SERVICE publish the service and test in the "SAP GAteway Client"
+(4) add logic to the MPC_EXT and DPC_EXT classes by redefining the methods (see below for details)
+(5) in the "SAP GAteway Client" test "EntitySets"
+
+
 The folders in the SEGW projects are:
 
 |Folder | Description |
 |--|--|
-| Data Model | contains the data definition (entity types and sets), as well as the relations (associations) |
-| Service Implementation | Operations |
+| Data Model | contains the data definition (entity types (=structre) and entity sets (=table)), as well as the relations (associations) |
+| Service Implementation | Operations on the entities of the "data model" are defined here |
 | Runtime Artifacts | Generated Classes |
-| Service maintenance | no details |
+| Service maintenance | Details of the service |
 
 
 Relevant artifacts are:
@@ -259,32 +267,37 @@ Relevant artifacts are:
 |--|--|--|
 | Z_DPU_DEMO1| SEGW Project | Name of the OData service |
 | BUT000 | Import DDIC structre | eg. BusinessPArtner BUT000, Partner is Key-field |
-| ZCL_Z_DPU_DEMO1_MPC| Technical Model - Base Class (MPC) | generated |
-| ZCL_Z_DPU_DEMO1_MPC_EXT | Technical Model - Base Class (MPC-EXT) | Extension |
-| ZCL_Z_DPU_DEMO1_DPC | Data Provider - Base Class (DPC) | generated |
-| ZCL_Z_DPU_DEMO1_DPC_EXT | Data Provider - Base Class (DPC-EXT) | Extension |
+| ZCL_Z_DPU_DEMO1_MPC| Technical Model - Base Class (MPC) | generated - do not modify |
+| ZCL_Z_DPU_DEMO1_MPC_EXT | Technical Model - Base Class (MPC-EXT) | Extension - put additions here|
+| ZCL_Z_DPU_DEMO1_DPC | Data Provider - Base Class (DPC) | generated - do not modify |
+| ZCL_Z_DPU_DEMO1_DPC_EXT | Data Provider - Base Class (DPC-EXT) | Extension - put additions here |
 |  | Technical Model Name |  |
 |  | Technical Service Name |  |
 
 The URL after registering the service in /IWFND/MAINT_SERVICE is:
-/sap/opu/odata/sap/Z_DPU_DEMO1
 http://YourSystemURL:Portnumber/sap/opu/odata/Z_DPU_DEMO1/$metadata
 
 It can be tested - as before - via postman and curl, or directly within the system via the "SAP Gateway Client".
 
-Keep in mind that this way Ythe service gives no results yet, but a “501” error (not implemented). This needs to done in the DPC_ECT class, where the CRUD methods can be implemented.
+Keep in mind that this way the service gives no results yet, but a <b>“501” error (not implemented)</b>. As mentioned earlier, this needs to done in the DPC_EXT class, where the CRUD methods can be implemented.
 
-Example implementation for the GET_ENTITYSET (Get all entries)
+Example implementation for the GET_ENTITYSET (Get all entries).
+Call it using http://YourSystemURL:Portnumber/sap/opu/odata/Z_DPU_DEMO1/businesspartners 
 
 ```abap
 METHOD businesspartners_get_entityset. "Redefinition 
-    SELECT * FROM but000 INTO TABLE et_entityset. 
+    SELECT * FROM but000 
+        INTO CORRESPONDING FIELDS OF TABLE @et_entityset
+        UP TO 50 rows. 
 ENDMETHOD. 
 ```
 
+Example implementation for the GET_ENTITY (Get single entry)
+Call it using http://YourSystemURL:Portnumber/sap/opu/odata/Z_DPU_DEMO1/businesspartners('12345')​ for selecting a single intem.
 
-Plenty tutorials for this method of implementing an OData service can be found at blogs.sap.com:
-[A Step by Step process to create Odata services in SAP / SAP HANA system](https://blogs.sap.com/2021/05/06/a-step-by-step-process-to-create-odata-services-in-sap-sap-hana-system/)
-[Introduction to OData and how to implement them in ABAP](https://blogs.sap.com/2020/11/24/introduction-to-odata-and-how-to-implement-them-in-abap/)
-[OData service development with SAP Gateway using CDS via Referenced Data Sources](https://blogs.sap.com/2016/06/01/odata-service-development-with-sap-gateway-using-cds-via-referenced-data-sources/)
+```abap
+see details in sub-folder 3_segw
+```
 
+The same way support for query-options, as well as the rest of the CRUD methods need to be implemented (even though the static methods of the class /iwbep/cl_mgw_data_util will do sorting, filtering and paging). You may fear already - this is a lot of work... But don't worry, there are easeier ways.
+The complete example can be found in the sub-folder 3_segw.
