@@ -10,15 +10,15 @@ A word of caution in advance: "While these are the valid steps for the tradition
 
 If you still want to continue with SEGW, go ahead.
 
-"SAP Gateway Service Builder (transaction SEGW)) is a design-time environment, which provides developers an easy-to-use set of tools for creating services. The Code-based OData Channel consumes it and supports developers throughout the development life cycle of a service." [Source: help.sap.com](https://help.sap.com/docs/SAP_NETWEAVER_AS_ABAP_751_IP/68bf513362174d54b58cddec28794093/cddd22512c312314e10000000a44176d.html?locale=en-US)
+"SAP Gateway Service Builder (transaction SEGW)) is a design-time environment, which provides developers an easy-to-use set of tools for creating services. The Code-based OData Channel consumes it and supports developers throughout the development life cycle of a service." [Source](https://help.sap.com/docs/SAP_NETWEAVER_AS_ABAP_751_IP/68bf513362174d54b58cddec28794093/cddd22512c312314e10000000a44176d.html?locale=en-US)
 
 
 The steps, which need to be taken, are:
-(1) in SEGW create a project and eg. import a DDIC structure for the data model
-(2) in SEGW generate the MPC (model provider class) and DPC (data provider class).
-(3) in /IWFND/MAINT_SERVICE publish the service and test in the "SAP GAteway Client"
-(4) add logic to the MPC_EXT and DPC_EXT classes by redefining the methods (see below for details)
-(5) in the "SAP GAteway Client" test "EntitySets"
+(1) in SEGW create a project and eg. import a DDIC structure for the data model <br/>
+(2) in SEGW generate the MPC (model provider class) and DPC (data provider class).<br/>
+(3) in /IWFND/MAINT_SERVICE publish the service and test in the "SAP GAteway Client"<br/>
+(4) add logic to the MPC_EXT and DPC_EXT classes by redefining the methods (see below for details)<br/>
+(5) in the "SAP GAteway Client" test "EntitySets"<br/>
 
 ## (1) SEGW project initialization
 
@@ -56,7 +56,7 @@ The logic of the service - what it actually does - is implemented by redefining 
 - there "Redefine" the method and add the custom logic
 
 
-Example implementation for the GET_ENTITYSET (Get all entries).
+Example implementation for the GET_ENTITYSET (Get all entries).<br/>
 Call it using http://YourSystemURL:Portnumber/sap/opu/odata/Z_DPU_DEMO1/businesspartners 
 
 ```abap
@@ -67,7 +67,7 @@ METHOD businesspartners_get_entityset. "Redefinition
 ENDMETHOD. 
 ```
 
-Example implementation for the GET_ENTITY (Get single entry)
+Example implementation for the GET_ENTITY (Get single entry)<br/>
 Call it using http://YourSystemURL:Portnumber/sap/opu/odata/Z_DPU_DEMO1/businesspartners('12345')​
 
 ```abap
@@ -99,7 +99,7 @@ METHOD businesspartners_get_entity. "Redefinition
 ENDMETHOD. 
 ```
 
-Be aware: The same way support for query-options, as well as the rest of the CRUD methods need to be implemented (even though the static methods of the **class /iwbep/cl_mgw_data_util** will do sorting, filtering and paging) (see source)[https://blogs.sap.com/2018/09/12/gateway-odata-service-how-to-implement-generic-filtering-filter-sorting-orderby-and-paging-top-and-skip/#comment-437107]. For details see [Conversions in SAP Gateway Foundation – Part 2](https://blogs.sap.com/2017/01/23/conversions-in-sap-gateway-foundation-part-2/). 
+Be aware: The same way support for query-options, as well as the rest of the CRUD methods need to be implemented (even though the static methods of the **class /iwbep/cl_mgw_data_util** will do sorting, filtering and paging) [see source](https://blogs.sap.com/2018/09/12/gateway-odata-service-how-to-implement-generic-filtering-filter-sorting-orderby-and-paging-top-and-skip/#comment-437107). For details see [Conversions in SAP Gateway Foundation – Part 2](https://blogs.sap.com/2017/01/23/conversions-in-sap-gateway-foundation-part-2/). 
 
 Adding logic for Filter, orderby and paging in the GET_ENTITYSET:
 
