@@ -47,7 +47,7 @@ We do:
 - use "SAP Gateway Client" to test the service
 
 
-## (4) Service implementation: adding logic through EXT-classes
+## (4) Service implementation: adding logic through DPC_EXT-classes
 
 The logic of the service - what it actually does - is implemented by redefining methods of the DPC (data provider) extension class (DPC_EXT).
 
@@ -55,7 +55,7 @@ The logic of the service - what it actually does - is implemented by redefining 
 - right click on the method you need to implement and choose "Go to ABAP workbench"
 - there "Redefine" the method and add the custom logic
 
-
+### Read-Methods (the R in CRUD)
 Example implementation for the GET_ENTITYSET (Get all entries).<br/>
 Call it using http://YourSystemURL:Portnumber/sap/opu/odata/Z_DPU_DEMO1/businesspartners 
 
@@ -99,7 +99,8 @@ METHOD businesspartners_get_entity. "Redefinition
 ENDMETHOD. 
 ```
 
-Be aware: The same way support for query-options, as well as the rest of the CRUD methods need to be implemented (even though the static methods of the **class /iwbep/cl_mgw_data_util** will do sorting, filtering and paging) [see source](https://blogs.sap.com/2018/09/12/gateway-odata-service-how-to-implement-generic-filtering-filter-sorting-orderby-and-paging-top-and-skip/#comment-437107). For details see [Conversions in SAP Gateway Foundation – Part 2](https://blogs.sap.com/2017/01/23/conversions-in-sap-gateway-foundation-part-2/). 
+Be aware: The same way support for query-options, as well as the rest of the CRUD methods need to be implemented (even though the static methods of the **class /iwbep/cl_mgw_data_util** will do sorting, filtering and paging) [see source](https://blogs.sap.com/2018/09/12/gateway-odata-service-how-to-implement-generic-filtering-filter-sorting-orderby-and-paging-top-and-skip/#comment-437107). For details see [Conversions in SAP Gateway Foundation – Part 2](https://blogs.sap.com/2017/01/23/conversions-in-sap-gateway-foundation-part-2/) as well as [Andre Fischer - How to Develop Query Options for an OData Service Using Code-Based Implementation](https://blogs.sap.com/2013/06/20/how-to-develop-query-options-for-an-odata-service-using-code-based-implementation/). 
+
 
 Adding logic for Filter, orderby and paging in the GET_ENTITYSET:
 
@@ -140,6 +141,67 @@ METHOD businesspartners_get_entityset. "Redefinition
 ENDMETHOD. 
 ```
 
+Todo: Update with details from:
+https://blogs.sap.com/2013/06/20/how-to-develop-query-options-for-an-odata-service-using-code-based-implementation/
+
+
+
+### Other CRUD-Methods (CUD)
+
+To create an entity, the method which needs to be redefined in the DPC_EXT class is: *CREATE_ENTITY*. The importing-parameter *io_data_provider* is the object, which holds the payload (as JSON or XML) of the **POST-HTTP request**. The response will be send back in the exporting parameter *ER_ENTITY*.
+
+In the CREATE_ENTITY method the logic is as follows:
+1) Declaration of payload-data
+*DATA: lv_entry_data TYPE zcl_xyzsample_mpc=>ts_pos.*
+
+2) Get the data from the payload - this is the one to be created
+*io_data_provider->read_entry_data( IMPORTING es_data = lv_entry_data ).*
+
+3) Logic using BAPIs or custom coding, eg:
+*BAPI_BUPA_CREATE_FROM_DATA* to create.
+*BAPI_BUPA_CENTRAL_CHANGE* to update.
+*BUPA_TEST_DELETE* to delete.
+
+4) Return
+Return *er_entity*
+
+
+Complete example for Create:
+
+```abap
+METHOD businesspartners_create_entity. "Redefinition 
+
+  " 1) Declaration of payload-data
+  DATA: lv_entry_data TYPE zcl_xyzsample_mpc=>ts_pos.
+  
+  " 2) Get the data from the payload
+  io_data_provider->read_entry_data( IMPORTING es_data = lv_entry_data ).
+
+  " Compare payload to IT_KEY_TAB parameter to be sure
+  READ TABLE it_key_tab INTO DATA(ls_key_tab) INDEX 1. 
+  IF ls_key_tab-value EQ lv_entry_data-partner. 
+    lv_continue = abap_true.
+  ELSE. 
+    lv_continue = abap_false.
+  ENDIF. 
+  
+  " 3) Logic - eg. BAPIS or custom coding
+  IF lv_continue eq abap_true.
+    CALL FUNCTION 'DIALOG_SET_NO_DIALOG'.
+    CALL FUNCTION 'BAPI_BUPA_CREATE_FROM_DATA' 
+      " add suitable parameters
+  ELSE.
+     " raise message: entity not found 
+  ENDIF.
+
+  * 4) Return updated data
+  er_entity = lv_entry_data.
+
+ENDMETHOD. 
+```
+
+See this blog-post for details: [Let’s code CRUDQ and Function Import operations in OData service!](https://blogs.sap.com/2014/03/06/let-s-code-crudq-and-function-import-operations-in-odata-service/)
+
 
 ## (5) Test
 
@@ -148,12 +210,92 @@ a) the buton "Load Metadata"
 b) in the "SAP Gateway Client" choose "Entity Set" - data should be returned
 
 
-## Deep-Entity
+## Associations
 
-todo
+- Create a second entity
+- Create the association by
+1) Naming-Convention: From_TO_Target
+2) Cardinality: Choose, 1:1, 1:n,...
+3) Referential Constraint" for the Foreign-Key relation
+4) Add Logic ;-) [see here](https://blogs.sap.com/2014/09/24/lets-code-associationnavigation-and-data-provider-expand-in-odata-service/)
 
 
 
+## Deep-Entity (in progress...)
+
+- Prerequsuite: Create Entities, Entity-Sets and Associations
+- Create an internal table within internal table (for the deep structure)
+- Change the MPC_EXT class (model) -> Add a new type for the deep-entity internal table:
+
+```abap
+  types: BEGIN of ts_deep_entity,
+          sid type c length 10,
+          otype type c length 4,
+          hdrtoitemnav type table of ts_sitem with default key,
+          hdrtoshipnav type tyble if ts_sship with default key,
+        END of ts_deep_entity.
+```
+
+- Redefine GET_EXPANDED_ENTITYSET in DPC_EXT class (trigger with $expand=<Navigation Property Name>), after optionally redefining the basic methods (get_entity,...), to fill the deep entity set.
+
+```abap
+METHOD ...GET_EXPANDED ENTITYSET.
+
+  DATA: it_deep_entity type table of ...MPC_EXT=>ts_deep_entity,
+        wa_deep_entity like line of it_deep_entity.
+
+  DATA: it_sheader type table of zdpu_sales_header,
+        it_sitem type table of zdpu_sales_item,
+        it_sship type table of zdpu_sales_ship,
+        wa_odata_item type ...MPC_EXT=>ts_sitem,
+        wa_odata_ship type ...MPC_EXT=>ts_sship.
+  
+  " Transfer data of the entity-sets to the deep entity
+  CASE IV_ENTITY_SET_NAME.
+    WHEN 'SHeaderSet'. " Entity Set
+      select * from zdpu_sales_header into table it_sheader.
+      if sy-subrc eq 0.
+        select * from zdpu_sales_item into table it_sitem
+          for all entries in it_sheader
+            where sid = it_sheader~sid.
+        
+        " same for zdpu_sales_ship
+      endif.
+
+      " transfer to deep entity-set
+      loop at it_sheader into data(wa_sheader).
+        move-corresponding wa_sheader to wa_deep_entity.
+        loop at it_sitem into data(wa_item) where sid = wa_sheader~sid.
+          move-corresponding wa_item to wa_odata_item.
+          append wa_odata_item to wa_deep_entity~hdrtoitemnav.
+        endloop.
+        " same for zdpu_sales_ship
+        
+        " append
+        append wa_deep_entity to it_deep_entity.
+        clear wa_deep_entity.
+
+      endloop.
+
+      " return
+      me->/iwbep/if_mgw_conv_srv_runtime~copy_data_to_ref(
+        EXPORTING
+          is_data = it_deep_entity
+        CHANGING
+          cr_data = er_entityset
+      ).
+
+    WHEN OTHERS.
+  ENDCASE.
+
+ENDMETHOD.
+```
+
+- Create the service and test in "SAP Gateway Client" using $expand=HDRTOITEMNAV (or HDRTOSHIPNAV).
+
+
+Todo, meanwhile check this video:
+[Just2Share: OData Service - Deep Entity Set Part 1](https://www.youtube.com/watch?v=bmzh7B8qmCY)
 
 
 
@@ -161,6 +303,7 @@ todo
 
 ### "System alias 'LOCAL' does not exist".
 [see here](https://rz10.de/sap-basis/fehler-kein-systemalias-fuer-service-und-benutzer-gefunden-beheben/)
+
 
  ## Ressources
 Plenty tutorials for this method of implementing an OData service can be found at blogs.sap.com:
@@ -170,3 +313,5 @@ Plenty tutorials for this method of implementing an OData service can be found a
 - [OData service development with SAP Gateway – code-based service development – Part I](https://blogs.sap.com/2016/05/31/odata-service-development-with-sap-gateway-code-based-service-development/)
 - [Exploring/Understanding Gateway Service Builder (SEGW)](https://blogs.sap.com/2019/05/14/exploringunderstanding-segw/)
 - [SAP Gateway Cookbooks - Getting Started with the Service Builder](https://help.sap.com/docs/SAP_NETWEAVER_AS_ABAP_751_IP/68bf513362174d54b58cddec28794093/36742c510e87fa50e10000000a441470.html?locale=en-US)
+- [Conversions in SAP Gateway Foundation – Part 2](https://blogs.sap.com/2017/01/23/conversions-in-sap-gateway-foundation-part-2/) 
+- [Andre Fischer - How to Develop Query Options for an OData Service Using Code-Based Implementation](https://blogs.sap.com/2013/06/20/how-to-develop-query-options-for-an-odata-service-using-code-based-implementation/). 
