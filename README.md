@@ -281,7 +281,7 @@ It can be tested - as before - via postman and curl, or directly within the syst
 
 Keep in mind that this way the service gives no results yet, but a <b>“501” error (not implemented)</b>. As mentioned earlier, this needs to done in the DPC_EXT class, where the CRUD methods can be implemented.
 
-Example implementation for the GET_ENTITYSET (Get all entries).
+Example implementation for the GET_ENTITYSET (Get all entries).<br/>
 Call it using http://YourSystemURL:Portnumber/sap/opu/odata/Z_DPU_DEMO1/businesspartners 
 
 ```abap
@@ -292,12 +292,30 @@ METHOD businesspartners_get_entityset. "Redefinition
 ENDMETHOD. 
 ```
 
-Example implementation for the GET_ENTITY (Get single entry)
-Call it using http://YourSystemURL:Portnumber/sap/opu/odata/Z_DPU_DEMO1/businesspartners('12345')​ for selecting a single intem.
+The same way support for query-options, as well as the rest of the CRUD methods need to be implemented (even though the static methods of the class /iwbep/cl_mgw_data_util will do sorting, filtering and paging). You may fear already - this is a lot of work... But don't worry, there are easeier ways.<br/>
 
-```abap
-see details in sub-folder 3_segw
-```
-
-The same way support for query-options, as well as the rest of the CRUD methods need to be implemented (even though the static methods of the class /iwbep/cl_mgw_data_util will do sorting, filtering and paging). You may fear already - this is a lot of work... But don't worry, there are easeier ways.
 The complete example can be found in the sub-folder 3_segw.
+
+
+# Example 4 - Odata service using ABAP Programming Model for SAP Fiori
+
+After having seen the "classical" SEGW code-based development approach, you likely want to hurry and run.... But starting with Netweaver 7.50 there is a better way to implement an OData service - being generated from CDS views:
+
+
+> **Note**
+> If you want to know more about CDS-views check out the upcoming blog-post: tbd
+
+## Prerequisite: SAP Demo System
+
+You would need an ABAP System >= Netweaver 7.50 and access to a SAP Gateway system.
+BTP: [SAP BTP Trial](https://www.sap.com/products/technology-platform/trial.html)
+ABAP Environment: [Create an SAP BTP ABAP Environment Trial User](https://developers.sap.com/tutorials/abap-environment-trial-onboarding.html)
+
+## Steps
+In short the steps are as follows:
+(1) Create a CDS views (Interface and Consumption) as Data Model (DDL) in ADT
+(2) Generate OData Service with auto-exposure based on SADL (Service Adaptation Description Language) by adding the annotation “@OData.publish:true” to the CDS.
+(see here for different possibilities: Exposing CDS Entities as OData Service – SAP Help Portal). As a result “several SAP Gateway artifacts” are being created, which need to be activated in the SAP Gateway Hub for exposure (/n/IWFND/MAINT_SERVICE).
+(3) Consume data (test using the SAP Gateway Client)
+(4) Create a SAP Fiori Elements application
+

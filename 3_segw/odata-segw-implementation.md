@@ -3,7 +3,7 @@
 ## Disclaimer
 A word of caution in advance: "While these are the valid steps for the traditional code-based OData development approach, it should be noted that at present time, other development models exist that are more suitable for development in S/4HANA." [see here](https://blogs.sap.com/2021/05/19/a-step-by-step-process-to-post-odata-services-in-sap-sap-hana-system/)
 
-- For ABAP Platform >= 7.5 you shoud use "ABAP Prgraming model for Fiori".
+- For Netweaver >= 7.50 you shoud use "ABAP Prgraming model for Fiori".
 - For S/4HANA >= 1909 use ABAP RAP
 
 ## Overview
