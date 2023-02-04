@@ -3,7 +3,7 @@
 These are some code-snippets and examples for OData.
 The examples are implemented using [SAP CAP](https://cap.cloud.sap/docs/) (Cloud Application Programing model), and are based on various example-data, starting with OData.org services Northwind and TripPin. The examples described below can be found in the corresponding subfolders. SAP Gateway examples may be added in the future.
 
-Last Updated: 27.11.2022 <br>
+Last Updated: 4.2.2023 <br>
 Status: Released <br>
 
 
