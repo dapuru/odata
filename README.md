@@ -299,7 +299,7 @@ The complete example can be found in the sub-folder 3_segw.
 
 # Example 4 - Odata service using ABAP Programming Model for SAP Fiori
 
-After having seen the "classical" SEGW code-based development approach, you likely want to hurry and run.... But starting with Netweaver 7.50 there is a better way to implement an OData service - being generated from CDS views:
+After having seen the "classical" SEGW code-based development approach, you likely want to hurry and start building.... But starting with Netweaver 7.50 there is a better way to implement an OData service - being generated from CDS views using the so-called "ABAP Programming Model for SAP Fiori".
 
 
 > **Note**
@@ -307,15 +307,38 @@ After having seen the "classical" SEGW code-based development approach, you like
 
 ## Prerequisite: SAP Demo System
 
-You would need an ABAP System >= Netweaver 7.50 and access to a SAP Gateway system.
-BTP: [SAP BTP Trial](https://www.sap.com/products/technology-platform/trial.html)
-ABAP Environment: [Create an SAP BTP ABAP Environment Trial User](https://developers.sap.com/tutorials/abap-environment-trial-onboarding.html)
+You would need an ABAP System >= Netweaver 7.50 and access to a SAP Gateway system.<br/>
+BTP: [SAP BTP Trial](https://www.sap.com/products/technology-platform/trial.html)<br/>
+ABAP Environment: [Create an SAP BTP ABAP Environment Trial User](https://developers.sap.com/tutorials/abap-environment-trial-onboarding.html).<br/>
 
 ## Steps
 In short the steps are as follows:
-(1) Create a CDS views (Interface and Consumption) as Data Model (DDL) in ADT
-(2) Generate OData Service with auto-exposure based on SADL (Service Adaptation Description Language) by adding the annotation “@OData.publish:true” to the CDS.
-(see here for different possibilities: Exposing CDS Entities as OData Service – SAP Help Portal). As a result “several SAP Gateway artifacts” are being created, which need to be activated in the SAP Gateway Hub for exposure (/n/IWFND/MAINT_SERVICE).
-(3) Consume data (test using the SAP Gateway Client)
-(4) Create a SAP Fiori Elements application
+<ol>
+<li> Create a CDS views (Interface and Consumption) as Data Model (DDL) in ADT</li>
+<li> Generate OData Service with auto-exposure based on SADL (Service Adaptation Description Language) by adding the annotation “@OData.publish:true” to the CDS.
+(see here for different possibilities: Exposing CDS Entities as OData Service – SAP Help Portal). As a result “several SAP Gateway artifacts” are being created, which need to be activated in the SAP Gateway Hub for exposure (/n/IWFND/MAINT_SERVICE).</li>
+<li>Consume data (test using the SAP Gateway Client)</li>
+<li>Create a SAP Fiori Elements application</li>
+</ol>
+see the subfolder "4_abap_fiori" for more information...
 
+> **Warning**
+>Be aware, the ABAP Programming model for SAP Fiori is not the latest evolution. The mst current way to develop OData services in the SAP environment is the "ABAP RESTful Application Programming Model (RAP)."
+
+## see also
+- [OData service development with SAP Gateway using CDS via Referenced Data Sources](https://blogs.sap.com/2016/06/01/odata-service-development-with-sap-gateway-using-cds-via-referenced-data-sources/)
+https://blogs.sap.com/2016/06/02/odata-service-development-with-sap-gateway-using-cds-via-referenced-data-sources-how-to-implement-updates/
+
+
+
+# Example 5 - OData service using CDS using RAP
+
+> **Note**
+> This is the suggested way to implement an OData service in case you are using SAP Cloud Platform ABAP Environment starting with release 1808 and on-prem SAP S/4 HANA 1909.
+
+
+
+## see also
+[Evolution of the ABAP Programming Model](https://blogs.sap.com/2019/02/08/evolution-of-the-abap-programming-model/)<br/>
+[Getting Started with the ABAP RESTful Application Programming Model (RAP)](https://blogs.sap.com/2019/10/25/getting-started-with-the-abap-restful-programming-model/)
+[Modern ABAP Development with the ABAP RESTful Application Programming Model (RAP)](https://community.sap.com/topics/abap/rap)
