@@ -1,14 +1,41 @@
+# ABAP RESTful Application Programming Model (RAP)
+
+"The ABAP RESTful Application Programming Model (in short RAP) defines the architecture for efficient end-to-end development of intrinsically SAP HANA-optimized OData services (such as Fiori apps). It supports the development of all types of Fiori applications as well as publishing Web APIs" [Source](https://help.sap.com/docs/btp/sap-abap-restful-application-programming-model/abap-restful-application-programming-model).
+
+> **Warning**
+> This is the suggested way to implement an OData service in case you are using SAP Cloud Platform ABAP Environment starting with release 1808 and on-prem SAP S/4 HANA 1909.
 
 
+# Prerequisites
 
-# Background
-
+- ABAP backend BTP >= 1808 and on-prem SAP S/4 HANA >= 1909 available.
+- ADT installed
 
 # Steps
+<ol>
+<li>Create the data model using CDS</li>
+<li>Create the OData service</li>
+<li>Create the Fiori Elements App</li>
+</ol>
+
+> **Note**
+> These steps are similar to the ones used in the "ABAP Programing Model for Fiori". I'll indicate the differences explicitly.
+
+Full-blown walkthroughs are available at:
+<ul>
+<li>[SAP BTP ABAP Environment: Create and Expose a CDS-Based Data Model](https://developers.sap.com/group.abap-env-expose-cds-travel-model.html)</li>
+<li>[TechEd 2020 - DEV260](https://github.com/SAP-archive/teched2020-DEV260)</li>
+<li>[Tutorial Navigator - Create a Travel App with SAP Fiori Elements Based on OData V4 RAP Service](https://developers.sap.com/group.fiori-tools-odata-v4-travel.html)</li>
+</ul>
+
+> **Note**
+> Several steps can be automated using the ["RAP Generator"](https://blogs.sap.com/2020/05/17/the-rap-generator/).
+
 
 # Example
 
-## CDS view as data model
+## Service creation
+### CDS view as data model
 
 ```js
 @AbapCatalog.sqlViewName: 'ZCUSTOMERS'
@@ -28,7 +55,7 @@ define view Z_Customers
 ```
 
 
-## Service definition
+### Service definition
 
 a service definition exposes the data model as a RESTful service.
 In this example, we're defining a service called "Z_CustomerService" that exposes the "Z_Customers" view we defined earlier. We're also enabling the "draft" feature, which allows for multi-step transactions and allows users to save drafts of their work.
@@ -47,7 +74,7 @@ define service Z_CustomerService
 }
 ```
 
-## Implemetation of the CRUD methods
+### Implemetation of the CRUD methods
 
 here is an example implementation of the methods for our Z_CustomerService service definition
 
@@ -120,7 +147,7 @@ ENDCLASS.
 
 ```
 
-## Implemetation of filtering and pagination
+### Implemetation of filtering and pagination
 
 
 ```js
@@ -214,10 +241,26 @@ method Z_CustomerService~readRelatedData
 endmethod.
 ```
 
-## Further steps
+### Further steps
  - Activate OData service in SEGW
  - Register the service in /IWFND/MAINT_SERVICE
  - Test using SICF
  - Add functionality for error handling and security
 
+
+## Annotations and MDE
+
+- MDE
+- Annotations
+
+
+## Generate SAP Fiori Elements App
+
+
+
 # Sources
+
+[Tutorial Navigator - Build an SAP Fiori App Using the ABAP RESTful Application Programming Model [RAP100]](https://developers.sap.com/group.sap-fiori-abap-rap100.html)
+[Tutorial Navigator - Create a Travel App with SAP Fiori Elements Based on OData V4 RAP Service](https://developers.sap.com/group.fiori-tools-odata-v4-travel.html)
+[Andre Fischer - RAP Generator Blog-Post](https://blogs.sap.com/2020/05/17/the-rap-generator/)
+[github.com - RAP Generator](https://github.com/SAP-samples/cloud-abap-rap)

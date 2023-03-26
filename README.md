@@ -336,9 +336,12 @@ https://blogs.sap.com/2016/06/02/odata-service-development-with-sap-gateway-usin
 > **Note**
 > This is the suggested way to implement an OData service in case you are using SAP Cloud Platform ABAP Environment starting with release 1808 and on-prem SAP S/4 HANA 1909.
 
+"The ABAP RESTful Application Programming Model (in short RAP) defines the architecture for efficient end-to-end development of intrinsically SAP HANA-optimized OData services (such as Fiori apps). It supports the development of all types of Fiori applications as well as publishing Web APIs" (1).
+
 
 
 ## see also
-[Evolution of the ABAP Programming Model](https://blogs.sap.com/2019/02/08/evolution-of-the-abap-programming-model/)<br/>
-[Getting Started with the ABAP RESTful Application Programming Model (RAP)](https://blogs.sap.com/2019/10/25/getting-started-with-the-abap-restful-programming-model/)
-[Modern ABAP Development with the ABAP RESTful Application Programming Model (RAP)](https://community.sap.com/topics/abap/rap)
+[1 - Evolution of the ABAP Programming Model](https://blogs.sap.com/2019/02/08/evolution-of-the-abap-programming-model/)<br/>
+[2- Getting Started with the ABAP RESTful Application Programming Model (RAP)](https://blogs.sap.com/2019/10/25/getting-started-with-the-abap-restful-programming-model/)
+[3 - Modern ABAP Development with the ABAP RESTful Application Programming Model (RAP)](https://community.sap.com/topics/abap/rap)
+[4 - SAP - ABAP RESTful Application Programming Model](https://help.sap.com/docs/btp/sap-abap-restful-application-programming-model/abap-restful-application-programming-model?locale=en-US)
