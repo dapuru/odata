@@ -133,7 +133,7 @@ When the service is exposed, the following artifacts are created in the ABAP Dic
 
 On activation, the following artifacts are created in the ABAP Dictionary:
 <ul>
-<li>Service Hroup metadata *ZDPU_DDL_BUSINESSPARTNER_CDS_1* (R3TR, IWSG)</li>
+<li>Service Group metadata *ZDPU_DDL_BUSINESSPARTNER_CDS_1* (R3TR, IWSG)</li>
 <li>The SAP Gateway model metadata *ZDPU_DDL_BUSINESSPARTNER_CDS_1_BE* (R3TR, IWOM)</li>
 <li>An ICF node (R3TR, SICF)</li>
 </ul>
