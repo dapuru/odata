@@ -1,9 +1,9 @@
 # OData by Example
 
 These are some code-snippets and examples for OData.
-The examples are implemented using [SAP CAP](https://cap.cloud.sap/docs/) (Cloud Application Programing model), and are based on various example-data, starting with OData.org services Northwind and TripPin. The examples described below can be found in the corresponding subfolders. SAP Gateway examples may be added in the future.
+The first example is language-agnostic - to get a first overview on odata. The following examples are implemented using [SAP CAP](https://cap.cloud.sap/docs/) (Cloud Application Programing model), [SAP RAP](https://community.sap.com/topics/abap/rap) as well as classical ABAP (SEGW). They are based on various example-data, starting with OData.org services Northwind and TripPin. The examples described below can be found in the corresponding subfolders.
 
-Last Updated: 4.2.2023 <br>
+Last Updated: 26.3.2023 <br>
 Status: Released <br>
 
 
