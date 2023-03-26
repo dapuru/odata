@@ -250,17 +250,18 @@ endmethod.
 
 ## Annotations and MDE
 
+todo
 - MDE
 - Annotations
 
 
 ## Generate SAP Fiori Elements App
 
-
+todo
 
 # Sources
 
-[Tutorial Navigator - Build an SAP Fiori App Using the ABAP RESTful Application Programming Model [RAP100]](https://developers.sap.com/group.sap-fiori-abap-rap100.html)
-[Tutorial Navigator - Create a Travel App with SAP Fiori Elements Based on OData V4 RAP Service](https://developers.sap.com/group.fiori-tools-odata-v4-travel.html)
-[Andre Fischer - RAP Generator Blog-Post](https://blogs.sap.com/2020/05/17/the-rap-generator/)
-[github.com - RAP Generator](https://github.com/SAP-samples/cloud-abap-rap)
+[Tutorial Navigator - Build an SAP Fiori App Using the ABAP RESTful Application Programming Model [RAP100]](https://developers.sap.com/group.sap-fiori-abap-rap100.html)<br/>
+[Tutorial Navigator - Create a Travel App with SAP Fiori Elements Based on OData V4 RAP Service](https://developers.sap.com/group.fiori-tools-odata-v4-travel.html)<br/>
+[Andre Fischer - RAP Generator Blog-Post](https://blogs.sap.com/2020/05/17/the-rap-generator/)<br/>
+[github.com - RAP Generator](https://github.com/SAP-samples/cloud-abap-rap)<br/>
